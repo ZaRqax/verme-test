@@ -3,7 +3,6 @@ Copyright 2020 ООО «Верме»
 """
 
 from django.db import models
-from django.db.models.expressions import RawSQL
 
 
 class OrganizationQuerySet(models.QuerySet):
