@@ -14,6 +14,14 @@ venv.bak/
 # files
 /static_collected
 /media
+.env
 
 # Database
 db.sqlite3
+authutils/__pycache__/
+authutils/api_v1/__pycache__/
+authutils/migrations/__pycache__/
+orgunits/__pycache__/
+orgunits/api_v1/__pycache__/
+orgunits/migrations/__pycache__/
+wfm/__pycache__/

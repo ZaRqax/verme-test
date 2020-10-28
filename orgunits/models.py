@@ -7,19 +7,38 @@ from django.db.models.expressions import RawSQL
 
 
 class OrganizationQuerySet(models.QuerySet):
+
     def tree_downwards(self, root_org_id):
         """
         Возвращает корневую организацию с запрашиваемым root_org_id и всех её детей любого уровня вложенности
         :type root_org_id: int
         """
-        return self.filter()
+
+        all_organizations = self.all().order_by('id')
+        child_id_list = {root_org_id, }
+
+        for org in all_organizations:
+            if org.parent_id in child_id_list:
+                child_id_list.add(org.id)
+        del all_organizations
+
+        return self.filter(id__in=child_id_list)
 
     def tree_upwards(self, child_org_id):
         """
         Возвращает корневую организацию с запрашиваемым child_org_id и всех её родителей любого уровня вложенности
         :type child_org_id: int
         """
-        return self.filter()
+
+        all_organizations = self.all().order_by('-id')
+        parent_id_list = {child_org_id, }
+
+        for org in all_organizations:
+            if org.id in parent_id_list:
+                parent_id_list.add(org.parent_id)
+        del all_organizations
+
+        return self.filter(id__in=parent_id_list)
 
 
 class Organization(models.Model):
@@ -48,7 +67,7 @@ class Organization(models.Model):
         """
         return type(self).objects.tree_upwards(self.id).exclude(id=self.id)
 
-    def children(self):
+    def childrens(self):
         """
         Возвращает всех детей любого уровня вложенности
         :rtype: django.db.models.QuerySet
